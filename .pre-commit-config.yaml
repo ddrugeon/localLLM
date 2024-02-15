@@ -1,0 +1,61 @@
+## See https://pre-commit.com for more information
+## See https://pre-commit.com/hooks.html for more hooks
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+        args: [--allow-multiple-documents]
+      - id: check-added-large-files
+        args: ['--maxkb=1024']
+      - id: check-json
+      - id: pretty-format-json
+        args: [--autofix, --no-sort-keys]
+      - id: check-ast
+      - id: name-tests-test
+        args: [--pytest-test-first]
+
+  - repo: https://github.com/pycqa/isort
+    rev: 5.12.0
+    hooks:
+      - id: isort
+        name: isort (python)
+        files: "\\.(py)$"
+        args: [ --settings-path=pyproject.toml ]
+  - repo: https://github.com/ambv/black
+    rev: 22.3.0
+    hooks:
+    - id: black
+      args: [ --config=pyproject.toml ]
+  - repo: https://github.com/pycqa/pylint
+    rev: v2.17.4
+    hooks:
+      - id: pylint
+        additional_dependencies:
+          - rdflib==6.3.2
+          - python-dotenv==1.0.0
+          - dataclasses-json==0.5.7
+          - linkml==1.5.2
+          - redis==4.6.0
+          - python-json-logger==2.0.7
+          - fastapi==0.109.0
+          - uvicorn==0.22.0
+          - httpx==0.24.1
+          - prometheus-fastapi-instrumentator==6.0.0
+          - structlog==23.1.0
+          - pydantic==2.5.3
+          - pydantic-settings==2.1.0
+          - cloudevents==1.10.0
+
+        args:
+          - --rcfile=pyproject.toml
+        exclude: tests(/\w*)
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: 'v0.0.267'
+    hooks:
+      - id: ruff
+        args:
+        - --fix
+        - --config=pyproject.toml
