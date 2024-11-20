@@ -1,6 +1,5 @@
 class Album:
-    """Album is a class that represents an album in the multimedia library.
-    """
+    """Album is a class that represents an album in the multimedia library."""
 
     def __init__(self, album_id: str, title: str, artist: str, year: int):
         self.album_id = album_id
