@@ -1,0 +1,18 @@
+version: "3"
+
+tasks:
+  format:
+    desc: Format python code with ruff
+    cmd: uv run --only-dev ruff format src
+  lint:
+    desc: Lint python code with ruff
+    cmd: uv run --only-dev ruff check src
+  run:
+    desc: run the app
+    cmd: uv run --only-dev localllm
+  test:
+    desc: run tests
+    cmd: uv run --only-dev pytest
+  default:
+    desc: List all tasks and their descriptions
+    cmd: task --list-all
