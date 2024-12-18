@@ -20,28 +20,6 @@ repos:
     hooks:
       - id: ruff
         name: ruff
-      - id: ruff-format
-        name: ruff-format
-
-  # docformatter - formats docstrings to follow PEP 257
-  - repo: https://github.com/pycqa/docformatter
-    rev: v1.7.5
-    hooks:
-      - id: docformatter
-        name: docformatter
-        args:
-          [
-            -r,
-            -i,
-            --pre-summary-newline,
-            --make-summary-multi-line,
-            --wrap-summaries,
-            "90",
-            --wrap-descriptions,
-            "90",
-            src,
-            tests,
-          ]
 
   # bandit - find common security issues
   - repo: https://github.com/pycqa/bandit
@@ -53,15 +31,6 @@ repos:
         args:
           - -r
           - src
-
-  - repo: local
-    hooks:
-      - id: pytest
-        name: pytest
-        entry: uv run pytest tests --cov=src
-        language: system
-        types: [python]
-        pass_filenames: false
 
   # prettier - formatting JS, CSS, JSON, Markdown, ...
   - repo: https://github.com/pre-commit/mirrors-prettier

@@ -118,3 +118,7 @@ Temporary Items
 .envrc
 .env
 dev.env
+.coverage
+.cache
+
+data/*.db

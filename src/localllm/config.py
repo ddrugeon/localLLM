@@ -15,3 +15,7 @@ class Settings(BaseSettings):
     document_folder: Path = Field(default=Path(ROOT_DIR, Path("data/inputs")).absolute())
 
     discogs_user_token: SecretStr
+    spotify_client_id: SecretStr
+    spotify_client_secret: SecretStr
+
+    database_model_url: str

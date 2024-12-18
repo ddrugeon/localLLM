@@ -1,5 +1,7 @@
 from typing import Protocol
 
+from localllm.domain.multimedia import Album
+
 
 class AlbumEnricher(Protocol):
     """
@@ -9,12 +11,12 @@ class AlbumEnricher(Protocol):
     source.
     """
 
-    def get_album_metadata(self, artist: str, album: str) -> dict:
+    async def get_album_metadata(self, artist: str, album: str) -> Album | None:
         """
         Retrieves album metadata from external source.
 
         :param artist: str, the artist of the album
         :param album: str, the title of the album
-        :return: dict, the metadata of the album
+        :return: Album, the metadata of the album or None if not found
         """
         pass

@@ -9,9 +9,17 @@ from localllm.domain.ports.fetchers import AlbumFileReader
 logger = structlog.getLogger()
 
 
-def __json_to_album(json_album: dict) -> Album:
+def json_to_album(json_album: dict) -> Album:
+    """
+    Converts a JSON album to an Album object.
+
+    :param json_album: dict, the JSON album
+    :return: Album, the Album object
+    """
+    logger.debug(f"Converting JSON album {json_album}")
+
     return Album(
-        album_id=json_album["id"],
+        album_id=str(json_album["id"]),
         title=json_album["album"],
         artist=json_album["artist"],
         year=json_album["year"],
@@ -29,9 +37,13 @@ class LocalFileJSONReader(AlbumFileReader):
 
         logger.debug(f"Reading albums from {path}")
 
-        with open(path) as json_document:
-            data = json.load(json_document)
+        try:
+            with open(path) as json_document:
+                data = json.load(json_document)
 
-            json_albums = data["result"]["albums_loop"]
+                json_albums = data["result"]["albums_loop"]
 
-            return [__json_to_album(json_album) for json_album in json_albums]
+                return [json_to_album(json_album) for json_album in json_albums]
+        except FileNotFoundError as e:
+            logger.error(f"File not found: {path}")
+            raise e

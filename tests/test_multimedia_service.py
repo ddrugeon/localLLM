@@ -1,67 +1,151 @@
 from pathlib import Path
-from unittest.mock import Mock
+from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
 from localllm.application.services.service import MultimediaService
-from localllm.domain.multimedia import Album
 
 
 @pytest.fixture
-def mock_fetcher():
+def mock_fetcher(albums):
     fetcher = Mock()
-    fetcher.read.return_value = [
-        Album(artist="Artist", title="Title", album_id="123", year=2024)
-    ]
+    fetcher.read.return_value = albums
     return fetcher
 
 
 @pytest.fixture
 def mock_enricher():
-    enricher = Mock()
-    enricher.get_album_metadata.return_value = {
-        "album": "Title",
-        "artist": "Artist",
-        "year": 2024,
-        "genres": ["Rock"],
-        "styles": ["Pop rock"],
-        "labels": ["Label"],
-        "country": ["France"],
-        "tracklist": [
-            {
-                "position": "01",
-                "title": "My first song",
-                "duration": "3:45",
-            }
-        ],
-    }
+    enricher = AsyncMock()
+    enricher.get_album_metadata = AsyncMock()
     return enricher
 
 
-def test_load_albums(mock_fetcher):
+@pytest.fixture
+def mock_repository():
+    repository = Mock()
+    repository.create_album = AsyncMock()
+    return repository
+
+
+@pytest.fixture
+def service(mock_fetcher, mock_enricher, mock_repository):
+    return MultimediaService(
+        fetcher=mock_fetcher, enrichers=[mock_enricher], repository=mock_repository
+    )
+
+
+def test_load_albums_with_no_fetcher_should_return_empty_array():
+    service = MultimediaService(fetcher=None)
+    albums = service.load_albums(Path("dummy_path"))
+    assert len(albums) == 0
+
+
+def test_load_albums_with_fetcher_should_return_album_list(mock_fetcher):
     service = MultimediaService(fetcher=mock_fetcher)
     albums = service.load_albums(Path("dummy_path"))
-    assert len(albums) == 1
-    assert albums[0].artist == "Artist"
-    assert albums[0].title == "Title"
+    assert len(albums) == 3
+    assert albums[0].artist == "Artist Name"
+    assert albums[0].title == "Album Title"
+    assert albums[1].artist == "Another Artist"
+    assert albums[1].title == "Album Title"
+    assert albums[2].artist == "Another Artist"
+    assert albums[2].title == "Another Title"
 
 
-def test_enrich_albums(mock_fetcher, mock_enricher):
-    service = MultimediaService(fetcher=mock_fetcher, enricher=mock_enricher)
-    albums = service.load_albums(Path("dummy_path"))
-    enriched_albums = service.enrich_albums(albums)
-    assert len(enriched_albums) == 1
-    assert enriched_albums[0]["artist"] == "Artist"
-    assert enriched_albums[0]["album"] == "Title"
-    assert enriched_albums[0]["year"] == 2024
-    assert enriched_albums[0]["genres"] == ["Rock"]
-    assert enriched_albums[0]["styles"] == ["Pop rock"]
-    assert enriched_albums[0]["labels"] == ["Label"]
-    assert enriched_albums[0]["country"] == ["France"]
-    assert enriched_albums[0]["tracklist"] == [
-        {
-            "position": "01",
-            "title": "My first song",
-            "duration": "3:45",
-        }
-    ]
+def test_load_albums_when_file_not_found_should_raise_exception():
+    mock_fetcher = Mock()
+    mock_fetcher.read.side_effect = FileNotFoundError("File not found")
+    service = MultimediaService(fetcher=mock_fetcher)
+
+    with pytest.raises(FileNotFoundError):
+        service.load_albums(Path("non_existent_file.json"))
+
+
+@pytest.mark.anyio
+async def test_enrich_album_success(mock_enricher, enriched_albums):
+    album = enriched_albums[0]
+    mock_enricher.get_album_metadata.return_value = album
+    service = MultimediaService(fetcher=None, enrichers=[mock_enricher], repository=None)
+    enriched_album = await service._enrich_album(album)
+
+    assert enriched_album.genres == ["Rock", "Pop"]
+    assert enriched_album.labels == ["Label 1", "Label 2"]
+
+
+@pytest.mark.anyio
+async def test_enrich_album_no_metadata(mock_enricher, album):
+    mock_enricher.get_album_metadata.return_value = None
+    service = MultimediaService(fetcher=None, enrichers=[mock_enricher], repository=None)
+    enriched_album = await service._enrich_album(album)
+
+    assert enriched_album.album_id == "1234"
+    assert enriched_album.artist == "Artist Name"
+    assert enriched_album.genres == []
+
+
+@pytest.mark.asyncio
+async def test_save_album_with_repository(album):
+    repository_mock = AsyncMock()
+    repository_mock.create_album.return_value = album
+
+    service = MultimediaService(repository=repository_mock)
+    saved_album = await service._save_album(album)
+
+    assert saved_album == album
+    repository_mock.create_album.assert_called_once_with(album)
+
+
+@pytest.mark.asyncio
+async def test_save_album_without_repository_should_log_it(album):
+    with patch("localllm.application.services.service.logger") as logger_mock:
+        service = MultimediaService()
+        saved_album = await service._save_album(album)
+
+        assert saved_album == album
+        logger_mock.info.assert_any_call("No repository configured, skipping save")
+
+
+@pytest.mark.asyncio
+async def test_save_albums_without_enrichment(service, album):
+    service.repository.create_album = AsyncMock(return_value=album)
+    albums = [album]
+    saved_albums = await service.save_albums(albums, enrich_album=False)
+    assert len(saved_albums) == 1
+    assert saved_albums[0].album_id == album.album_id
+    assert saved_albums[0].title == album.title
+    assert saved_albums[0].artist == album.artist
+    service.repository.create_album.assert_called_once_with(album)
+
+
+@pytest.mark.asyncio
+async def test_save_albums_with_enrichment(service, album, enriched_albums):
+    service.repository.create_album = AsyncMock(return_value=enriched_albums[0])
+    service._enrich_album = AsyncMock(return_value=album)
+    albums = [album]
+    saved_albums = await service.save_albums(albums, enrich_album=True)
+    assert len(saved_albums) == 1
+    assert saved_albums[0] == enriched_albums[0]
+    service._enrich_album.assert_called_once_with(album)
+    service.repository.create_album.assert_called_once_with(album)
+
+
+@pytest.mark.asyncio
+async def test_save_albums_enrichment_error(service, album):
+    service.repository.create_album = AsyncMock(return_value=album)
+    service._enrich_album = AsyncMock(side_effect=Exception("Enrichment error"))
+    albums = [album]
+    saved_albums = await service.save_albums(albums, enrich_album=True)
+    assert len(saved_albums) == 1
+    assert saved_albums[0] == album
+    service._enrich_album.assert_called_once_with(album)
+    service.repository.create_album.assert_called_once_with(album)
+
+
+@pytest.mark.asyncio
+async def test_save_albums_save_error(service, album):
+    service.repository.create_album = AsyncMock(side_effect=Exception("Save error"))
+    albums = [album]
+    saved_albums = await service.save_albums(albums, enrich_album=False)
+    assert len(saved_albums) == 1
+    assert saved_albums[0] == album
+    service.repository.create_album.assert_called_once_with(album)
