@@ -3,10 +3,10 @@ version: "3"
 tasks:
   format:
     desc: Format python code with ruff
-    cmd: uv run --only-dev ruff format src
+    cmd: uv run --only-dev ruff format src tests
   lint:
     desc: Lint python code with ruff
-    cmd: uv run --only-dev ruff check src
+    cmd: uv run --only-dev ruff check src tests
   run:
     desc: run the app
     cmd: uv run --only-dev localllm
