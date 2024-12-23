@@ -48,9 +48,7 @@ class AlbumEntity(SQLModel, table=True):
         if "labels" in data and isinstance(data["labels"], list):
             data["labels"] = json.dumps(data["labels"])
         if "external_urls" in data and isinstance(data["external_urls"], dict):
-            data["external_urls"] = json.dumps(
-                self._convert_urls_to_str(data["external_urls"])
-            )
+            data["external_urls"] = json.dumps(self._convert_urls_to_str(data["external_urls"]))
         if "external_ids" in data and isinstance(data["external_ids"], dict):
             data["external_ids"] = json.dumps(data["external_ids"])
         super().__init__(**data)

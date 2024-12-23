@@ -29,25 +29,27 @@ def album():
         year=2021,
     )
 
+
 @pytest.fixture()
 def enriched_album():
     yield Album(
-            album_id="1234",
-            title="Album Title",
-            artist="Artist Name",
-            year=2021,
-            genres=["Rock", "Pop"],
-            styles=["Indie", "Alternative"],
-            labels=["Label 1", "Label 2"],
-            country="US",
-            tracklist=[
-                Track(position=1, title="Track 1", duration=180),
-                Track(position=2, title="Track 2", duration=210),
-            ],
-            credits="Producer Name",
-            external_urls={"spotify": "https://open.spotify.com/album/1234"},
-            external_ids={"spotify": "1234"},
-        )
+        album_id="1234",
+        title="Album Title",
+        artist="Artist Name",
+        year=2021,
+        genres=["Rock", "Pop"],
+        styles=["Indie", "Alternative"],
+        labels=["Label 1", "Label 2"],
+        country="US",
+        tracklist=[
+            Track(position=1, title="Track 1", duration=180),
+            Track(position=2, title="Track 2", duration=210),
+        ],
+        credits="Producer Name",
+        external_urls={"spotify": "https://open.spotify.com/album/1234"},
+        external_ids={"spotify": "1234"},
+    )
+
 
 @pytest.fixture()
 def albums():

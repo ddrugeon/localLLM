@@ -11,7 +11,7 @@ logger = structlog.getLogger()
 class AlbumAdapter(ABC):
     """
     Interface abstraite pour les adaptateurs de métadonnées d'albums.
-    """ # noqa: D200
+    """  # noqa: D200
 
     @abstractmethod
     def to_album(self, metadata: dict) -> Album | None:
@@ -49,7 +49,7 @@ class AlbumAdapter(ABC):
 class DiscogsAlbumAdapter(AlbumAdapter):
     """
     Adaptateur pour convertir les métadonnées Discogs en objets Album.
-    """ # noqa: D200
+    """  # noqa: D200
 
     def _parse_title(self, title: str) -> tuple[str | None, str]:
         """
@@ -82,9 +82,7 @@ class DiscogsAlbumAdapter(AlbumAdapter):
                 album_id=f"discogs_{metadata.get('release_id')}",
                 title=album_title,
                 artist=artist,
-                year=metadata.get("year", 0)
-                if isinstance(metadata.get("year"), int)
-                else 0,
+                year=metadata.get("year", 0) if isinstance(metadata.get("year"), int) else 0,
                 genres=metadata.get("genres", []),
                 styles=metadata.get("styles", []),
                 labels=metadata.get("labels", []),
@@ -95,16 +93,14 @@ class DiscogsAlbumAdapter(AlbumAdapter):
                 external_ids={"discogs": str(metadata.get("release_id"))},
             )
         except (KeyError, ValueError) as e:
-            logger.error(
-                "Erreur lors de la conversion des métadonnées Discogs", error=str(e)
-            )
+            logger.error("Erreur lors de la conversion des métadonnées Discogs", error=str(e))
             return None
 
 
 class SpotifyAlbumAdapter(AlbumAdapter):
     """
     Adaptateur pour convertir les métadonnées Spotify en objets Album.
-    """# noqa: D200
+    """  # noqa: D200
 
     def _extract_spotify_id(self, url: str) -> str | None:
         """

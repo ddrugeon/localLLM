@@ -15,7 +15,7 @@ logger = structlog.getLogger()
 class AlbumNotFoundError(Exception):
     """
     Exception raised when an album was not found in database.
-    """ # noqa: D200
+    """  # noqa: D200
 
     pass
 
@@ -23,7 +23,7 @@ class AlbumNotFoundError(Exception):
 class AlbumSaveError(Exception):
     """
     Exception raised when an error occurs while saving an album.
-    """ # noqa: D200
+    """  # noqa: D200
 
     pass
 
@@ -31,7 +31,7 @@ class AlbumSaveError(Exception):
 class AlbumUpdateError(Exception):
     """
     Exception raised when an error occurs while updating an album.
-    """ # noqa: D200
+    """  # noqa: D200
 
     pass
 
@@ -162,11 +162,7 @@ class DatabaseAlbumPersistence(AlbumRepository):
         logger.info(f"Retrieving album with ID: {album_id}")
         session_class = sessionmaker(self._engine)
         with session_class() as session:
-            result = (
-                session.query(AlbumEntity)
-                .filter(AlbumEntity.album_id == album_id)
-                .first()
-            )
+            result = session.query(AlbumEntity).filter(AlbumEntity.album_id == album_id).first()
             if result:
                 return _entity_to_domain(result)
 
@@ -187,9 +183,9 @@ class DatabaseAlbumPersistence(AlbumRepository):
             results = (
                 session.query(AlbumEntity)
                 .filter(
-                    AlbumEntity.title.ilike(f"%{query}%") |
-                    AlbumEntity.artist.ilike(f"%{query}%") |
-                    AlbumEntity.year.ilike(f"%{query}%"),
+                    AlbumEntity.title.ilike(f"%{query}%")
+                    | AlbumEntity.artist.ilike(f"%{query}%")
+                    | AlbumEntity.year.ilike(f"%{query}%"),
                 )
                 .limit(top_k)
                 .all()
@@ -208,9 +204,7 @@ class DatabaseAlbumPersistence(AlbumRepository):
         session_class = sessionmaker(self._engine)
         with session_class() as session:
             try:
-                album = (
-                    session.query(AlbumEntity).filter(AlbumEntity.id == album_id).first()
-                )
+                album = session.query(AlbumEntity).filter(AlbumEntity.id == album_id).first()
                 if album:
                     album.title = updated_album.title
                     album.artist = updated_album.artist

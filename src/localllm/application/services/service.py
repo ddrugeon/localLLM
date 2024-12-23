@@ -41,9 +41,7 @@ class MultimediaService:
         logger.info("No fetcher configured, returning empty list")
         return []
 
-    async def save_albums(
-        self, albums: list[Album], enrich_album: bool = False
-    ) -> list[Album]:
+    async def save_albums(self, albums: list[Album], enrich_album: bool = False) -> list[Album]:
         async def process_album(album: Album) -> Album:
             try:
                 if enrich_album:
@@ -62,18 +60,13 @@ class MultimediaService:
 
     async def _enrich_album(self, album: Album) -> Album:
         logger.info("Enriching album")
-        tasks = [
-            enricher.get_album_metadata(album.artist, album.title)
-            for enricher in self.enrichers
-        ]
+        tasks = [enricher.get_album_metadata(album.artist, album.title) for enricher in self.enrichers]
         results = await asyncio.gather(*tasks)
 
         combined_metadata = album.model_dump()
         for metadata in results:
             if metadata:
-                combined_metadata.update(
-                    {k: v for k, v in metadata.dict().items() if v is not None}
-                )
+                combined_metadata.update({k: v for k, v in metadata.dict().items() if v is not None})
 
         return Album(**combined_metadata)
 

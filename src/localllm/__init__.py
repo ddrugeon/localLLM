@@ -23,9 +23,7 @@ class Application:
         logger.debug("Initializing multimedia assistant")
         self.__source_file = Path(settings.document_folder, "albums.json")
         fetcher = LocalFileJSONReader()
-        discogs_enricher = DiscogsAlbumEnricher(
-            discogs_token=settings.discogs_user_token.get_secret_value()
-        )
+        discogs_enricher = DiscogsAlbumEnricher(discogs_token=settings.discogs_user_token.get_secret_value())
         spotify_enricher = SpotifyAlbumEnricher(
             client_id=settings.spotify_client_id.get_secret_value(),
             client_secret=settings.spotify_client_secret.get_secret_value(),
@@ -34,9 +32,7 @@ class Application:
         enrichers = [discogs_enricher, spotify_enricher]
         repository = DatabaseAlbumPersistence(db_url=settings.database_model_url)
 
-        self.__service = MultimediaService(
-            fetcher=fetcher, enrichers=enrichers, repository=repository
-        )
+        self.__service = MultimediaService(fetcher=fetcher, enrichers=enrichers, repository=repository)
 
     async def ingest_albums(self) -> None:
         logger.info("Loading albums")

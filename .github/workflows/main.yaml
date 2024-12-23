@@ -25,6 +25,6 @@ jobs:
       - name: Test
         run: uv run pytest tests
       - name: lint
-        run: uv run ruff check autobot tests
+        run: uv run ruff check
       - name: format
-        run: uv run ruff format --check autobot tests
+        run: uv run ruff format --check src tests

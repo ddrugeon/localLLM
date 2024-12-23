@@ -29,9 +29,7 @@ def mock_repository():
 
 @pytest.fixture
 def service(mock_fetcher, mock_enricher, mock_repository):
-    return MultimediaService(
-        fetcher=mock_fetcher, enrichers=[mock_enricher], repository=mock_repository
-    )
+    return MultimediaService(fetcher=mock_fetcher, enrichers=[mock_enricher], repository=mock_repository)
 
 
 def test_load_albums_with_no_fetcher_should_return_empty_array():
@@ -91,6 +89,7 @@ async def test_save_album_with_repository(service, album):
 
     assert saved_album == album
     service.repository.create_album.assert_called_once_with(album)
+
 
 @pytest.mark.asyncio
 async def test_save_album_without_repository_should_log_it(album):

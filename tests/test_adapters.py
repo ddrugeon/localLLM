@@ -74,9 +74,7 @@ def test_invalid_track_missing_required():
 
 
 def test_valid_album_creation():
-    album = Album(
-        album_id="test_123", title="Test Album", artist="Test Artist", year=2023
-    )
+    album = Album(album_id="test_123", title="Test Album", artist="Test Artist", year=2023)
     assert album.album_id == "test_123"
     assert album.title == "Test Album"
     assert album.artist == "Test Artist"

@@ -51,22 +51,14 @@ class Album(BaseModel):
 
     # Optional fields
     genres: list[str] = Field(default_factory=list, description="Music genres")
-    styles: list[str] = Field(
-        default_factory=list, description="Music styles (subgenres)"
-    )
+    styles: list[str] = Field(default_factory=list, description="Music styles (subgenres)")
     labels: list[str] = Field(default_factory=list, description="Record labels")
     country: str | None = Field(None, description="Country of release")
     tracklist: list[Track] = Field(default_factory=list, description="list of tracks")
     credits: str | None = Field(None, description="Additional artists credits")
-    popularity: int | None = Field(
-        None, ge=0, le=100, description="Popularity score (0-100)"
-    )
-    external_urls: dict[str, HttpUrl] = Field(
-        default_factory=dict, description="External service URLs"
-    )
-    external_ids: dict[str, str] = Field(
-        default_factory=dict, description="External service IDs"
-    )
+    popularity: int | None = Field(None, ge=0, le=100, description="Popularity score (0-100)")
+    external_urls: dict[str, HttpUrl] = Field(default_factory=dict, description="External service URLs")
+    external_ids: dict[str, str] = Field(default_factory=dict, description="External service IDs")
 
     class Config:
         frozen = True

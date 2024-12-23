@@ -68,7 +68,6 @@ class AlbumRepository(Protocol):
         """
         pass
 
-
     def update_album(self, album_id: int, updated_album: Album) -> Album | None:
         """
         Updates an existing album in the storage.

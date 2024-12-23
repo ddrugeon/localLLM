@@ -37,7 +37,7 @@ class RateLimitException(Exception):
 class DiscogsRateLimitException(RateLimitException):
     """
     Exception raised when the Discogs API rate limit is reached.
-    """ # noqa: D200
+    """  # noqa: D200
 
     pass
 
@@ -45,7 +45,7 @@ class DiscogsRateLimitException(RateLimitException):
 class SpotifyRateLimitException(RateLimitException):
     """
     Exception raised when the Spotify API rate limit is reached.
-    """ # noqa: D200
+    """  # noqa: D200
 
     pass
 
@@ -53,7 +53,7 @@ class SpotifyRateLimitException(RateLimitException):
 class BaseAlbumEnricher(AlbumEnricher):
     """
     Base class for album enrichers with common functionality.
-    """ # noqa: D200
+    """  # noqa: D200
 
     def _is_rate_limit_exception(self, exception: Exception) -> bool:
         """
@@ -62,10 +62,7 @@ class BaseAlbumEnricher(AlbumEnricher):
         :param exception: The exception to check.
         :return: True if the exception is a rate limit exception, False otherwise.
         """
-        return (
-            RATE_LIMIT_STATUS_CODE in str(exception)
-            or RATE_LIMIT_MESSAGE in str(exception).lower()
-        )
+        return RATE_LIMIT_STATUS_CODE in str(exception) or RATE_LIMIT_MESSAGE in str(exception).lower()
 
 
 class DiscogsAlbumEnricher(BaseAlbumEnricher):
@@ -84,9 +81,7 @@ class DiscogsAlbumEnricher(BaseAlbumEnricher):
         before_sleep=before_sleep_log(logger, log_level=logging.INFO),
         reraise=True,
     )
-    async def _search_with_retry(
-        self, query: str
-    ) -> discogs_client.models.Release | None:
+    async def _search_with_retry(self, query: str) -> discogs_client.models.Release | None:
         """
         Searches for a release on Discogs, with rate limit handling.
 
@@ -129,9 +124,7 @@ class SpotifyAlbumEnricher(BaseAlbumEnricher):
         :param client_secret: The Spotify client secret.
         """
         self.spotify = spotipy.Spotify(
-            auth_manager=SpotifyClientCredentials(
-                client_id=client_id, client_secret=client_secret
-            )
+            auth_manager=SpotifyClientCredentials(client_id=client_id, client_secret=client_secret)
         )
 
     @retry(
