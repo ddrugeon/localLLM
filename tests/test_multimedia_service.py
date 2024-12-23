@@ -84,16 +84,13 @@ async def test_enrich_album_no_metadata(mock_enricher, album):
 
 
 @pytest.mark.asyncio
-async def test_save_album_with_repository(album):
-    repository_mock = AsyncMock()
-    repository_mock.create_album.return_value = album
+async def test_save_album_with_repository(service, album):
+    service.repository.create_album = Mock(return_value=album)
 
-    service = MultimediaService(repository=repository_mock)
     saved_album = await service._save_album(album)
 
     assert saved_album == album
-    repository_mock.create_album.assert_called_once_with(album)
-
+    service.repository.create_album.assert_called_once_with(album)
 
 @pytest.mark.asyncio
 async def test_save_album_without_repository_should_log_it(album):
@@ -118,15 +115,18 @@ async def test_save_albums_without_enrichment(service, album):
 
 
 @pytest.mark.asyncio
-async def test_save_albums_with_enrichment(service, album, enriched_albums):
-    service.repository.create_album = AsyncMock(return_value=enriched_albums[0])
-    service._enrich_album = AsyncMock(return_value=album)
+async def test_save_albums_with_enrichment(service, album, enriched_album):
+    service.repository.create_album = AsyncMock(return_value=enriched_album)
+    service._enrich_album = AsyncMock(return_value=enriched_album)
     albums = [album]
     saved_albums = await service.save_albums(albums, enrich_album=True)
     assert len(saved_albums) == 1
-    assert saved_albums[0] == enriched_albums[0]
+    assert saved_albums[0].album_id == enriched_album.album_id
+    assert saved_albums[0].title == enriched_album.title
+    assert saved_albums[0].artist == enriched_album.artist
+    assert saved_albums[0].genres == enriched_album.genres
     service._enrich_album.assert_called_once_with(album)
-    service.repository.create_album.assert_called_once_with(album)
+    service.repository.create_album.assert_called_once_with(enriched_album)
 
 
 @pytest.mark.asyncio

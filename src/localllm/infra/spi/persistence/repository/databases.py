@@ -1,10 +1,12 @@
+from datetime import datetime
+
 import structlog
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import sessionmaker
 from sqlmodel import SQLModel, create_engine
 
 from localllm.domain.multimedia import Album, Track
-from localllm.domain.ports.persistence import AlbumPersistence
+from localllm.domain.ports.persistence import AlbumRepository
 from localllm.infra.spi.persistence.repository.models import AlbumEntity, TrackEntity
 
 logger = structlog.getLogger()
@@ -91,7 +93,7 @@ def _entity_to_domain_track(entity_track: TrackEntity) -> Track:
     )
 
 
-class DatabaseAlbumPersistence(AlbumPersistence):
+class DatabaseAlbumPersistence(AlbumRepository):
     def __init__(self, db_url: str):
         logger.info(f"Connecting to database: {db_url}")
         self._engine = create_engine(db_url, echo=False)
@@ -171,33 +173,28 @@ class DatabaseAlbumPersistence(AlbumPersistence):
             logger.error("Album not found")
             raise AlbumNotFoundError(f"Album with ID {album_id} not found")
 
-    def get_albums_by_title(self, title: str) -> list[Album]:
+    def search_albums(self, query: str, top_k: int = 3) -> list[Album]:
         """
-        Retrieves albums by their title from the database.
+        Searches for relevant albums based on a query.
 
-        :param title: str, the title of the albums
-        :return: list[Album], the list of albums with the specified title
+        :param query: str, the search query on title or artist name (or both).
+        :param top_k: int, maximum number of albums to return
+        :return: list[Album], the most relevant albums
         """
-        logger.info(f"Retrieving albums with title: {title}")
+        logger.info(f"Searching albums with query: {query}")
         session_class = sessionmaker(self._engine)
         with session_class() as session:
-            results = session.query(AlbumEntity).filter(AlbumEntity.title == title)
-            return [_entity_to_domain(entity_album=entity) for entity in results.all()]
-
-    def get_albums_by_artist(self, artist: str) -> list[Album]:
-        """
-        Retrieves albums by their artist from the database.
-
-        :param artist: str, the artist of the albums
-        :return: list[Album], the list of albums with the specified artist
-        """
-        logger.info(f"Retrieving albums by artist: {artist}")
-        session_class = sessionmaker(self._engine)
-        with session_class() as session:
-            results = session.query(AlbumEntity).filter(
-                AlbumEntity.artist.contains(artist)
+            results = (
+                session.query(AlbumEntity)
+                .filter(
+                    AlbumEntity.title.ilike(f"%{query}%") |
+                    AlbumEntity.artist.ilike(f"%{query}%") |
+                    AlbumEntity.year.ilike(f"%{query}%"),
+                )
+                .limit(top_k)
+                .all()
             )
-            return [_entity_to_domain(entity_album=entity) for entity in results.all()]
+            return [_entity_to_domain(entity_album=entity) for entity in results]
 
     def update_album(self, album_id: int, updated_album: Album) -> Album | None:
         """
@@ -226,6 +223,7 @@ class DatabaseAlbumPersistence(AlbumPersistence):
                     album.credits = updated_album.credits
                     album.external_urls = updated_album.external_urls
                     album.external_ids = updated_album.external_ids
+                    album.updated_at = datetime.now(datetime.UTC)
                     session.add(album)
                     session.commit()
                     session.refresh(album)

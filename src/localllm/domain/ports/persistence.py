@@ -3,10 +3,10 @@ from typing import Protocol
 from localllm.domain.multimedia import Album
 
 
-class AlbumPersistence(Protocol):
-    def initialize(self):
+class AlbumRepository(Protocol):
+    def initialize(self) -> None:
         """
-        Initializes the database by creating all tables.
+        Initializes the document storage system.
 
         :return: None
         """
@@ -14,24 +14,24 @@ class AlbumPersistence(Protocol):
 
     def create_album(self, album: Album) -> Album:
         """
-        Saves an album to the database.
+        Saves an album to the storage.
 
         :param album: Album, the album to be saved
-        :return: None
+        :return: Album, the saved document with any additional metadata
         """
         pass
 
     def get_number_albums(self) -> int:
         """
-        Retrieves number of albums from the database.
+        Retrieves total number of albums from the storage.
 
-        :return: int, number of albums present in database
+        :return: int, number of albums present in storage
         """
         pass
 
     def get_albums(self) -> list[Album]:
         """
-        Retrieves all albums from the database.
+        Retrieves all albums from the storage.
 
         :return: list[Album], the list of all albums
         """
@@ -39,44 +39,39 @@ class AlbumPersistence(Protocol):
 
     def get_album_by_id(self, album_id: str) -> Album:
         """
-        Retrieves an album by its ID from the database.
+        Retrieves an album by its ID.
 
         :param album_id: str, the ID of the album
-        :return: Album, the album with the specified ID
-        :raises: AlbumNotFoundError, if the album is not found
+        :return: Album, the album with the given ID
+        :raise AlbumNotFoundError: if the album is not found
         """
         pass
 
-    def get_albums_by_title(self, title: str) -> list[Album]:
+    def search_albums(self, query: str, top_k: int = 3) -> list[Album]:
         """
-        Retrieves albums by their title from the database.
+        Searches for relevant albums based on a query.
 
-        :param title: str, the title of the albums
-        :return: list[Album], the list of albums with the specified title
+        :param query: str, the search query on title or artist name (or both).
+            Example: "artist:artist_name title:album_title"
+        :param top_k: int, maximum number of albums to return
+        :return: List[Document], the most relevant albums
         """
         pass
 
-    def get_albums_by_artist(self, artist: str) -> list[Album]:
+    def search_albums_by_metadata(self, metadata: dict, top_k: int = 3) -> list[Album]:
         """
-        Retrieves albums by their artist from the database.
+        Searches for albums matching specific metadata criteria.
 
-        :param artist: str, the artist of the albums
-        :return: list[Album], the list of albums with the specified artist
+        :param metadata: dict, metadata key-value pairs to match
+        :param top_k: int, maximum number of albums to return
+        :return: List[Document], the matching albums
         """
         pass
 
-    def get_albums_by_genres(self, genres: list[str]) -> list[Album]:
-        """
-        Retrieves albums by their genres from the database.
-
-        :param artist: list[str], the genres of the albums
-        :return: list[Album], the list of albums with the specified artist
-        """
-        pass
 
     def update_album(self, album_id: int, updated_album: Album) -> Album | None:
         """
-        Updates an existing album in the database.
+        Updates an existing album in the storage.
 
         :param album_id: int, the ID of the album to be updated
         :param updated_album: Album, the updated album data

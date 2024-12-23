@@ -47,12 +47,12 @@ def prepare_database(repository, albums):
 
 
 def test_create_album_with_album_domain_model_should_save_it_in_database(
-    repository, album
+    repository, enriched_album
 ):
     # Given an album to save
 
     # When saving the album
-    repository.create_album(album)
+    repository.create_album(enriched_album)
 
     # Then the album should be saved in the database
     Session = sessionmaker(bind=repository._engine)
@@ -149,12 +149,12 @@ def test_get_albums_by_id_should_raise_error_when_id_do_not_exist_in_database(
         repository.get_album_by_id("3421")
 
 
-def test_get_albums_by_title_should_return_albums_when_albums_exists_in_database(
+def test_search_albums_by_title_should_return_albums_when_albums_exists_in_database(
     repository, prepare_database
 ):
     # Given multiple albums to save
     # When retrieving album id
-    albums = repository.get_albums_by_title("Album Title")
+    albums = repository.search_albums("Album Title")
 
     # Then the album should be the correct one
     assert albums is not None
@@ -166,12 +166,12 @@ def test_get_albums_by_title_should_return_albums_when_albums_exists_in_database
     assert albums[1].title == "Album Title"
 
 
-def test_get_albums_by_title_should_return_empty_list_when_albums_do_not_exist_in_database(
+def test_search_albums_by_title_should_return_empty_list_when_albums_do_not_exist_in_database(
     repository, prepare_database
 ):
     # Given multiple albums to save
     # When retrieving album id
-    albums = repository.get_albums_by_title("Another Album")
+    albums = repository.search_albums("Non existing Album")
 
     # Then the album should be the correct one
     assert albums is not None
@@ -179,12 +179,12 @@ def test_get_albums_by_title_should_return_empty_list_when_albums_do_not_exist_i
     assert len(albums) == 0
 
 
-def test_get_albums_by_artist_should_return_albums_when_albums_exists_in_database(
+def test_search_albums_by_artist_should_return_albums_when_albums_exists_in_database(
     repository, prepare_database
 ):
     # Given multiple albums to save
     # When retrieving album id
-    albums = repository.get_albums_by_artist("Another")
+    albums = repository.search_albums("Another Artist")
 
     # Then the album should be the correct one
     assert albums is not None
@@ -196,3 +196,45 @@ def test_get_albums_by_artist_should_return_albums_when_albums_exists_in_databas
     assert albums[1].album_id == "9876"
     assert albums[1].title == "Another Title"
     assert albums[1].artist == "Another Artist"
+
+def test_search_albums_by_artist_should_return_no_albums_when_albums_does_not_exists_in_database(
+    repository, prepare_database
+):
+    # Given multiple albums to save
+    # When retrieving album id
+    albums = repository.search_albums("Non Existing Artist")
+
+    # Then the album should be the correct one
+    assert albums is not None
+    assert isinstance(albums, list)
+    assert len(albums) == 0
+
+def test_search_albums_by_year_should_return_albums_when_albums_exists_in_database(
+    repository, prepare_database
+):
+    # Given multiple albums to save
+    # When retrieving album id
+    albums = repository.search_albums(2022)
+
+    # Then the album should be the correct one
+    assert albums is not None
+    assert isinstance(albums, list)
+    assert len(albums) == 2
+    assert albums[0].album_id == "5678"
+    assert albums[0].title == "Album Title"
+    assert albums[0].artist == "Another Artist"
+    assert albums[1].album_id == "9876"
+    assert albums[1].title == "Another Title"
+    assert albums[1].artist == "Another Artist"
+
+def test_search_albums_by_year_should_return_no_albums_when_albums_does_not_exists_in_database(
+    repository, prepare_database
+):
+    # Given multiple albums to save
+    # When retrieving album id
+    albums = repository.search_albums(1990)
+
+    # Then the album should be the correct one
+    assert albums is not None
+    assert isinstance(albums, list)
+    assert len(albums) == 0

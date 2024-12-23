@@ -51,7 +51,7 @@ class DiscogsAlbumAdapter(AlbumAdapter):
     Adaptateur pour convertir les métadonnées Discogs en objets Album.
     """ # noqa: D200
 
-    def _parse_title(self, title: str) -> tuple[str, str]:
+    def _parse_title(self, title: str) -> tuple[str | None, str]:
         """
         Extrait l'artiste et le titre de la chaîne de titre Discogs.
 
@@ -59,20 +59,20 @@ class DiscogsAlbumAdapter(AlbumAdapter):
             title: Titre au format "Artiste - Titre"
 
         Returns:
-            tuple[str, str]: (artiste, titre)
+            tuple[str | None, str]: (artiste, titre)
         """
         if " - " in title:
             artist, album = title.split(" - ", 1)
             return artist, album
-        return "", title
+        return None, title
 
     def to_album(self, metadata: dict) -> Album | None:
         if not metadata:
             return None
 
         try:
-            title = metadata.get("title", "Unknown")
-            artist, album_title = self._parse_title(title)
+            title = metadata.get("title", None)
+            artist, album_title = self._parse_title(title) if title is not None else (None, None)
 
             external_urls = {}
             if discogs_url := metadata.get("discogs_url"):

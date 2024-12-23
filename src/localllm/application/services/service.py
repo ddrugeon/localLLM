@@ -6,7 +6,7 @@ import structlog
 from localllm.domain.multimedia import Album
 from localllm.domain.ports.enrichers import AlbumEnricher
 from localllm.domain.ports.fetchers import AlbumFileReader
-from localllm.domain.ports.persistence import AlbumPersistence
+from localllm.domain.ports.persistence import AlbumRepository
 
 logger = structlog.getLogger()
 
@@ -23,7 +23,7 @@ class MultimediaService:
         self,
         fetcher: AlbumFileReader | None = None,
         enrichers: list[AlbumEnricher] = None,
-        repository: AlbumPersistence = None,
+        repository: AlbumRepository = None,
     ):
         self.album_file_reader = fetcher
         self.enrichers = enrichers or []
