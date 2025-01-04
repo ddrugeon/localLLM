@@ -43,11 +43,11 @@ def test_load_albums_with_fetcher_should_return_album_list(mock_fetcher):
     albums = service.load_albums(Path("dummy_path"))
     assert len(albums) == 3
     assert albums[0].artist == "Artist Name"
-    assert albums[0].title == "Album Title"
+    assert albums[0].title == "Paint in the Sky"
     assert albums[1].artist == "Another Artist"
-    assert albums[1].title == "Album Title"
+    assert albums[1].title == "Echoes of the see"
     assert albums[2].artist == "Another Artist"
-    assert albums[2].title == "Another Title"
+    assert albums[2].title == "Echoes of the Forest"
 
 
 def test_load_albums_when_file_not_found_should_raise_exception():

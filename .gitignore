@@ -122,3 +122,4 @@ dev.env
 .cache
 
 data/*.db
+data/qdrant

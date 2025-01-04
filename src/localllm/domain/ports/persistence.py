@@ -12,7 +12,7 @@ class AlbumRepository(Protocol):
         """
         pass
 
-    def create_album(self, album: Album) -> Album:
+    def create_album(self, album: Album) -> (str, Album):
         """
         Saves an album to the storage.
 

@@ -108,7 +108,7 @@ class DatabaseAlbumPersistence(AlbumRepository):
         SQLModel.metadata.drop_all(self._engine, checkfirst=True)
         SQLModel.metadata.create_all(self._engine, checkfirst=True)
 
-    def create_album(self, album: Album) -> Album:
+    def create_album(self, album: Album) -> (str, Album):
         """
         Saves an album to the database.
 
@@ -122,7 +122,7 @@ class DatabaseAlbumPersistence(AlbumRepository):
                 entity = _domain_to_entity(domain_album=album)
                 session.add(entity)
                 session.commit()
-                return _entity_to_domain(entity)
+                return entity.id, _entity_to_domain(entity)
             except SQLAlchemyError as e:
                 session.rollback()
                 logger.error(f"Error saving album: {e}")

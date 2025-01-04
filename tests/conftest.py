@@ -2,10 +2,7 @@ import asyncio
 
 import pytest
 
-from localllm import DatabaseAlbumPersistence
 from localllm.domain.multimedia import Album, Track
-
-TEST_DATABASE_URL = "sqlite:///:memory:"  # In-memory database for testing
 
 
 @pytest.fixture(scope="session")
@@ -34,7 +31,7 @@ def album():
 def enriched_album():
     yield Album(
         album_id="1234",
-        title="Album Title",
+        title="Paint in the Sky",
         artist="Artist Name",
         year=2021,
         genres=["Rock", "Pop"],
@@ -56,19 +53,19 @@ def albums():
     yield [
         Album(
             album_id="1234",
-            title="Album Title",
+            title="Paint in the Sky",
             artist="Artist Name",
             year=2021,
         ),
         Album(
             album_id="5678",
-            title="Album Title",
+            title="Echoes of the see",
             artist="Another Artist",
             year=2022,
         ),
         Album(
             album_id="9876",
-            title="Another Title",
+            title="Echoes of the Forest",
             artist="Another Artist",
             year=2022,
         ),
@@ -130,11 +127,3 @@ def enriched_albums():
             external_ids={"spotify": "9876"},
         ),
     ]
-
-
-# Fixture for the repository with the in-memory database
-@pytest.fixture
-def repository():
-    repository = DatabaseAlbumPersistence(db_url=TEST_DATABASE_URL)
-    repository.initialize()
-    yield repository
