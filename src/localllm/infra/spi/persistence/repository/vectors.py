@@ -5,7 +5,7 @@ from langchain.text_splitter import CharacterTextSplitter
 from langchain_community.embeddings.fastembed import FastEmbedEmbeddings
 from langchain_core.documents import Document
 from langchain_core.embeddings import Embeddings
-from langchain_qdrant import Qdrant as QdrantLangChain
+from langchain_qdrant import QdrantVectorStore as QdrantLangChain
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, VectorParams
 
@@ -86,7 +86,7 @@ class QdrantAlbumRepository(AlbumVectorRepository):
             logger.info(f"Collection {self.collection_name} created")
 
         self.langchain_qdrant = QdrantLangChain(
-            client=self.qdrant_client, collection_name=self.collection_name, embeddings=self.embeddings
+            client=self.qdrant_client, collection_name=self.collection_name, embedding=self.embeddings
         )
 
     def index_album(self, album: Album) -> (str, Album):
