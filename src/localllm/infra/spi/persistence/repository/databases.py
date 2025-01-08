@@ -9,7 +9,7 @@ from localllm.domain.multimedia import Album, Track
 from localllm.domain.ports.persistence import AlbumRepository
 from localllm.infra.spi.persistence.repository.models import AlbumEntity, TrackEntity
 
-logger = structlog.getLogger()
+logger = structlog.getLogger(__name__)
 
 
 class AlbumNotFoundError(Exception):
@@ -115,7 +115,7 @@ class DatabaseAlbumPersistence(AlbumRepository):
         :param album: Album, the album to be saved
         :return: None
         """
-        logger.info(f"Saving album: {album.title} by {album.artist}")
+        logger.info(f"Saving album: {album.title} by {album.artist} into SQLite database")
         session_class = sessionmaker(self._engine)
         with session_class() as session:
             try:
@@ -125,7 +125,7 @@ class DatabaseAlbumPersistence(AlbumRepository):
                 return entity.id, _entity_to_domain(entity)
             except SQLAlchemyError as e:
                 session.rollback()
-                logger.error(f"Error saving album: {e}")
+                logger.error(f"Error when saving album: {e}")
                 raise AlbumSaveError("Failed to save album") from e
 
     def get_number_albums(self) -> int:

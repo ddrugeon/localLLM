@@ -3,7 +3,7 @@ from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
-from localllm.application.services.service import MultimediaService
+from localllm.application.services.service import MultimediaIngesterService
 
 
 @pytest.fixture
@@ -29,17 +29,17 @@ def mock_repository():
 
 @pytest.fixture
 def service(mock_fetcher, mock_enricher, mock_repository):
-    return MultimediaService(fetcher=mock_fetcher, enrichers=[mock_enricher], repository=mock_repository)
+    return MultimediaIngesterService(fetcher=mock_fetcher, enrichers=[mock_enricher], repository=mock_repository)
 
 
 def test_load_albums_with_no_fetcher_should_return_empty_array():
-    service = MultimediaService(fetcher=None)
+    service = MultimediaIngesterService(fetcher=None)
     albums = service.load_albums(Path("dummy_path"))
     assert len(albums) == 0
 
 
 def test_load_albums_with_fetcher_should_return_album_list(mock_fetcher):
-    service = MultimediaService(fetcher=mock_fetcher)
+    service = MultimediaIngesterService(fetcher=mock_fetcher)
     albums = service.load_albums(Path("dummy_path"))
     assert len(albums) == 3
     assert albums[0].artist == "Artist Name"
@@ -53,7 +53,7 @@ def test_load_albums_with_fetcher_should_return_album_list(mock_fetcher):
 def test_load_albums_when_file_not_found_should_raise_exception():
     mock_fetcher = Mock()
     mock_fetcher.read.side_effect = FileNotFoundError("File not found")
-    service = MultimediaService(fetcher=mock_fetcher)
+    service = MultimediaIngesterService(fetcher=mock_fetcher)
 
     with pytest.raises(FileNotFoundError):
         service.load_albums(Path("non_existent_file.json"))
@@ -63,7 +63,7 @@ def test_load_albums_when_file_not_found_should_raise_exception():
 async def test_enrich_album_success(mock_enricher, enriched_albums):
     album = enriched_albums[0]
     mock_enricher.get_album_metadata.return_value = album
-    service = MultimediaService(fetcher=None, enrichers=[mock_enricher], repository=None)
+    service = MultimediaIngesterService(fetcher=None, enrichers=[mock_enricher], repository=None)
     enriched_album = await service._enrich_album(album)
 
     assert enriched_album.genres == ["Rock", "Pop"]
@@ -73,7 +73,7 @@ async def test_enrich_album_success(mock_enricher, enriched_albums):
 @pytest.mark.anyio
 async def test_enrich_album_no_metadata(mock_enricher, album):
     mock_enricher.get_album_metadata.return_value = None
-    service = MultimediaService(fetcher=None, enrichers=[mock_enricher], repository=None)
+    service = MultimediaIngesterService(fetcher=None, enrichers=[mock_enricher], repository=None)
     enriched_album = await service._enrich_album(album)
 
     assert enriched_album.album_id == "1234"
@@ -94,7 +94,7 @@ async def test_save_album_with_repository(service, album):
 @pytest.mark.asyncio
 async def test_save_album_without_repository_should_log_it(album):
     with patch("localllm.application.services.service.logger") as logger_mock:
-        service = MultimediaService()
+        service = MultimediaIngesterService()
         saved_album = await service._save_album(album)
 
         assert saved_album == album

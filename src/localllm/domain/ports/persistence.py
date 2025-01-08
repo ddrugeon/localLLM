@@ -77,3 +77,40 @@ class AlbumRepository(Protocol):
         :return: Album, the updated album or None if not found
         """
         pass
+
+
+class AlbumVectorRepository(Protocol):
+    def initialize(self) -> None:
+        """
+        Initializes a vector storage system.
+
+        :return: None
+        """
+        pass
+
+    def index_album(self, album: Album) -> (str, Album):
+        """
+        Indexes an album in the vector storage.
+
+        :param album: Album, the album to be indexed
+        :return: Album, the indexed album with any additional metadata
+        """
+        pass
+
+    def search_albums(self, query: str, top_k: int = 3) -> list[Album]:
+        """
+        Searches for albums based on a query.
+
+        :param query: str, the search query
+        :param top_k: int, maximum number of albums to return
+        :return: list[Album], the most relevant albums
+        """
+        pass
+
+    def close(self) -> None:
+        """
+        Closes the vector storage system.
+
+        :return: None
+        """
+        pass

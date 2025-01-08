@@ -7,18 +7,16 @@ from langchain_core.documents import Document
 from langchain_core.embeddings import Embeddings
 from langchain_qdrant import Qdrant as QdrantLangChain
 from qdrant_client import QdrantClient
-from qdrant_client.models import Distance, FieldCondition, Filter, MatchValue, VectorParams
+from qdrant_client.models import Distance, VectorParams
 
 from localllm.domain.multimedia import Album, Track
-from localllm.domain.ports.persistence import AlbumRepository
-from localllm.infra.spi.persistence.repository.databases import AlbumNotFoundError
+from localllm.domain.ports.persistence import AlbumVectorRepository
 
-DEFAULT_VECTOR_SIZE = 384
 logger = structlog.getLogger()
 
 
 def _album_to_text(album: Album) -> str:
-    return f"{album.album_id} " f"{album.title} " f"{album.artist} " f"{album.year} " f"{' '.join(album.genres)}"
+    return f"{album.album_id} {album.title} {album.artist} {album.year} {' '.join(album.genres)}"
 
 
 def _album_to_document(album: Album) -> Document:
@@ -58,14 +56,14 @@ def _document_to_album(document: Document) -> Album:
     )
 
 
-class QdrantAlbumRepository(AlbumRepository):
+class QdrantAlbumRepository(AlbumVectorRepository):
     def __init__(
         self,
         database_url: str,
         collection_name: str,
-        embeddings: Embeddings = None,
-        vector_size: int = DEFAULT_VECTOR_SIZE,
-        distance: Distance = Distance.COSINE,
+        embeddings: Embeddings,
+        vector_size: int,
+        distance: Distance,
     ):
         self.qdrant_client = QdrantClient(location=database_url)
         self.collection_name = collection_name
@@ -91,85 +89,16 @@ class QdrantAlbumRepository(AlbumRepository):
             client=self.qdrant_client, collection_name=self.collection_name, embeddings=self.embeddings
         )
 
-    def create_album(self, album: Album) -> (str, Album):
+    def index_album(self, album: Album) -> (str, Album):
         current_id = uuid4()
         document = _album_to_document(album)
 
         self.langchain_qdrant.add_documents(documents=[document], ids=[str(current_id)])
         return current_id, album
 
-    def get_number_albums(self) -> int:
-        try:
-            collection_info = self.qdrant_client.get_collection(collection_name=self.collection_name)
-            return collection_info.points_count
-        except Exception as e:
-            logger.info(f"Error getting number of albums: {e}")
-            return 0
-
-    def get_albums(self) -> list[Album]:
-        try:
-            # Get all points IDs from collection
-            collection_info = self.qdrant_client.get_collection(collection_name=self.collection_name)
-            if collection_info.points_count == 0:
-                return []
-
-            # Retrieve all points with their payloads
-            all_points = self.qdrant_client.scroll(
-                collection_name=self.collection_name, with_payload=True, limit=collection_info.points_count
-            )[0]  # scroll returns tuple (points, next_page_offset)
-
-            # Process points into albums
-            seen_album_ids = set()
-            albums = []
-
-            for point in all_points:
-                album_id = point.payload["album_id"]
-                if album_id not in seen_album_ids:
-                    albums.append(
-                        Album(
-                            album_id=album_id,
-                            title=point.payload["title"],
-                            artist=point.payload["artist"],
-                            year=point.payload["year"],
-                            genres=point.payload.get("genres", []),
-                            styles=point.payload.get("styles", []),
-                            labels=point.payload.get("labels", []),
-                            country=point.payload.get("country", ""),
-                            tracklist=[Track(title=t) for t in point.payload.get("tracklist", [])],
-                            credits=point.payload.get("credits", ""),
-                            external_urls=point.payload.get("external_urls", {}),
-                            external_ids=point.payload.get("external_ids", {}),
-                        )
-                    )
-                    seen_album_ids.add(album_id)
-
-            return albums
-
-        except Exception as e:
-            logger.error(f"Error retrieving albums: {e}")
-            return []
-
-    def get_album_by_id(self, album_id: str) -> Album:
-        points = self.qdrant_client.search(
-            collection_name=self.collection_name,
-            query_vector=self.embeddings.embed_query(album_id),
-            query_filter=Filter(must=[FieldCondition(key="album_id", match=MatchValue(value=album_id))]),
-        )
-
-        if points:
-            album_data = points[0].payload
-            return _document_to_album(Document(page_content="", metadata=album_data))
-        raise AlbumNotFoundError(f"Album with ID {album_id} not found")
-
     def search_albums(self, query: str, top_k: int = 3) -> list[Album]:
         documents = self.langchain_qdrant.search(query=query, k=top_k, search_type="similarity", score_threshold=0.7)
         return [_document_to_album(document) for document in documents]
-
-    def search_albums_by_metadata(self, metadata: dict, top_k: int = 3) -> list[Album]:
-        raise NotImplementedError
-
-    def update_album(self, album_id: int, updated_album: Album) -> Album | None:
-        raise NotImplementedError
 
     def close(self) -> None:
         self.qdrant_client.close()

@@ -19,3 +19,4 @@ class Settings(BaseSettings):
     spotify_client_secret: SecretStr
 
     database_model_url: str
+    vector_model_url: str

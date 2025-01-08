@@ -15,7 +15,12 @@ services:
         target: /qdrant/config/production.yaml
     volumes:
       - ./data/qdrant:/qdrant/storage
-
+#  localllm:
+#    build:
+#      dockerfile: Dockerfile
+#    container_name: localllm
+#    volumes:
+#      - ./data:/data
 configs:
   qdrant_config:
     content: |
