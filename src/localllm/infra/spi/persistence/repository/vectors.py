@@ -16,7 +16,15 @@ logger = structlog.getLogger()
 
 
 def _album_to_text(album: Album) -> str:
-    return f"{album.album_id} {album.title} {album.artist} {album.year} {' '.join(album.genres)}"
+    return (f"{album.album_id} "
+            f"{album.title} "
+            f"{album.artist} "
+            f"{album.year} "
+            f"{' '.join(album.genres)} "
+            f"{' '.join(album.styles)} "
+            f"{' '.join(album.labels)} "
+            f"{album.country} "
+            )
 
 
 def _album_to_document(album: Album) -> Document:
@@ -97,7 +105,7 @@ class QdrantAlbumRepository(AlbumVectorRepository):
         return current_id, album
 
     def search_albums(self, query: str, top_k: int = 3) -> list[Album]:
-        documents = self.langchain_qdrant.search(query=query, k=top_k, search_type="similarity", score_threshold=0.7)
+        documents = self.langchain_qdrant.search(query=query, k=top_k, search_type="similarity", score_threshold=0.65)
         return [_document_to_album(document) for document in documents]
 
     def close(self) -> None:

@@ -23,7 +23,6 @@ def ingest(enrich: bool = False, file: Path = Path("data/inputs/albums.json"), s
     application = create_multimedia_service()
     albums = application.load_albums(album_file_path=file)
     if enrich:
-        albums = albums[:5]
         albums = asyncio.run(application.enrich_albums(albums=albums))
         application.save_albums(albums=albums, path=Path("data/enriched_albums.json"))
 
@@ -38,10 +37,10 @@ def index(file: Path = Path("data/inputs/albums.json")):
     application.index_albums(albums=albums)
 
 @app.command()
-def search(query: str):
+def search(query: str, top_k: int = 5):
     """Search albums."""
     application = create_multimedia_service()
-    albums = application.search_albums(query=query)
+    albums = application.search_albums(query=query, top_k=top_k)
 
     table = Table("Name", "Artist", "Year")
     for album in albums:
