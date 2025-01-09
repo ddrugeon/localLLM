@@ -1,0 +1,173 @@
+[
+    {
+        "album_id": "9012",
+        "title": "Symphony X",
+        "artist": "Symphony X",
+        "year": 1996,
+        "genres": [
+            "Rock"
+        ],
+        "styles": [
+            "Heavy Metal",
+            "Prog Rock"
+        ],
+        "labels": [
+            "SPV GmbH",
+            "Disctronics S",
+            "The Hit Factory",
+            "Zero Corporation Co., Ltd.",
+            "Warner/Chappell",
+            "The Castle Studios",
+            "Solid Rock",
+            "Inside Out Music",
+            "Panteon"
+        ],
+        "country": "Europe",
+        "tracklist": [],
+        "credits": null,
+        "popularity": null,
+        "external_urls": {
+            "discogs": "https://api.discogs.com/releases/715896"
+        },
+        "external_ids": {
+            "discogs": "715896"
+        }
+    },
+    {
+        "album_id": "8110",
+        "title": "01011001",
+        "artist": "Ayreon",
+        "year": 2008,
+        "genres": [
+            "Rock"
+        ],
+        "styles": [
+            "Space Rock",
+            "Prog Rock",
+            "Heavy Metal"
+        ],
+        "labels": [
+            "SPV GmbH",
+            "Beachwood Manor Studios",
+            "Arjen Anthony Lucassen",
+            "Five Legged Monkey Studios",
+            "Rooftop Studios",
+            "The Electric Castle",
+            "Alien Beans Studio",
+            "Inside Out Music"
+        ],
+        "country": "Germany",
+        "tracklist": [],
+        "credits": null,
+        "popularity": null,
+        "external_urls": {
+            "discogs": "https://api.discogs.com/releases/1971615",
+            "spotify": "https://open.spotify.com/album/4JdcWpRQs6jWQrCANr1oDh"
+        },
+        "external_ids": {
+            "discogs": "1971615",
+            "spotify": "4JdcWpRQs6jWQrCANr1oDh"
+        }
+    },
+    {
+        "album_id": "8116",
+        "title": "The Final Experiment (Special Edition)",
+        "artist": "Ayreon",
+        "year": 1995,
+        "genres": [
+            "Rock"
+        ],
+        "styles": [
+            "Progressive Metal",
+            "Symphonic Metal"
+        ],
+        "labels": [
+            "Transmission Records",
+            "Q Point",
+            "RS29",
+            "DADC Austria",
+            "Bertus"
+        ],
+        "country": "Netherlands",
+        "tracklist": [],
+        "credits": null,
+        "popularity": null,
+        "external_urls": {
+            "discogs": "https://api.discogs.com/releases/1520052",
+            "spotify": "https://open.spotify.com/album/3GHSshTscPVcMEzS4BRHs9"
+        },
+        "external_ids": {
+            "discogs": "1520052",
+            "spotify": "3GHSshTscPVcMEzS4BRHs9"
+        }
+    },
+    {
+        "album_id": "9013",
+        "title": "The Damnation Game (Special Edition)",
+        "artist": "Symphony X",
+        "year": 1995,
+        "genres": [
+            "Rock"
+        ],
+        "styles": [
+            "Prog Rock",
+            "Heavy Metal"
+        ],
+        "labels": [
+            "SPV GmbH",
+            "Trax East",
+            "Studio 84",
+            "Zero Corporation Co., Ltd.",
+            "Polygram Studios",
+            "Rough Trade",
+            "Lucretia Records International Srl",
+            "Inside Out Music"
+        ],
+        "country": "Europe",
+        "tracklist": [],
+        "credits": null,
+        "popularity": null,
+        "external_urls": {
+            "discogs": "https://api.discogs.com/releases/1178307",
+            "spotify": "https://open.spotify.com/album/4y72N4zWsOqNxuCeyi2Qdz"
+        },
+        "external_ids": {
+            "discogs": "1178307",
+            "spotify": "4y72N4zWsOqNxuCeyi2Qdz"
+        }
+    },
+    {
+        "album_id": "8111",
+        "title": "Actual Fantasy Revisited",
+        "artist": "Ayreon",
+        "year": 2004,
+        "genres": [
+            "Rock"
+        ],
+        "styles": [
+            "Art Rock",
+            "Symphonic Rock",
+            "Heavy Metal"
+        ],
+        "labels": [
+            "Transmission Records",
+            "Q Point",
+            "RS29",
+            "The Electric Castle",
+            "DADC Austria",
+            "Bertus"
+        ],
+        "country": "Netherlands",
+        "tracklist": [],
+        "credits": null,
+        "popularity": null,
+        "external_urls": {
+            "discogs": "https://api.discogs.com/releases/1515154",
+            "spotify": "https://open.spotify.com/album/7ryQ9BNyxgOpAUxIRIEGrL"
+        },
+        "external_ids": {
+            "discogs": "1515154",
+            "spotify": "7ryQ9BNyxgOpAUxIRIEGrL"
+        }
+    }
+]

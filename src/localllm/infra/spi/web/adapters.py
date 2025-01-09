@@ -26,7 +26,7 @@ class AlbumAdapter(ABC):
         """
         pass
 
-    def _create_tracks(self, track_data: list[dict]) -> list[Track]:
+    def _create_tracks(self, track_data: list[dict]) -> set[Track]:
         """
         Crée une liste de pistes à partir des données brutes.
 
@@ -36,14 +36,15 @@ class AlbumAdapter(ABC):
         Returns:
             List[Track]: Liste des objets Track
         """
-        return [
+        return {
             Track(
                 position=str(track.get("position", "")),
                 title=track.get("title", ""),
                 duration=str(track.get("duration", "")),
             )
             for track in track_data
-        ]
+            }
+
 
 
 class DiscogsAlbumAdapter(AlbumAdapter):
@@ -70,27 +71,28 @@ class DiscogsAlbumAdapter(AlbumAdapter):
         if not metadata:
             return None
 
+        logger.debug("Converting Discogs metadata to Album object", metadata=metadata)
         try:
             title = metadata.get("title", None)
             artist, album_title = self._parse_title(title) if title is not None else (None, None)
 
             external_urls = {}
-            if discogs_url := metadata.get("discogs_url"):
+            if discogs_url := metadata.get("resource_url"):
                 external_urls["discogs"] = discogs_url
 
             return Album(
-                album_id=f"discogs_{metadata.get('release_id')}",
+                album_id=f"discogs_{metadata.get('id')}",
                 title=album_title,
                 artist=artist,
-                year=metadata.get("year", 0) if isinstance(metadata.get("year"), int) else 0,
-                genres=metadata.get("genres", []),
-                styles=metadata.get("styles", []),
-                labels=metadata.get("labels", []),
+                year=int(metadata.get("year", 0)),
+                genres=metadata.get("genre", set()),
+                styles=metadata.get("style", set()),
+                labels=metadata.get("label", set()),
                 country=metadata.get("country"),
                 tracklist=self._create_tracks(metadata.get("tracklist", [])),
                 credits=metadata.get("credits"),
                 external_urls=external_urls,
-                external_ids={"discogs": str(metadata.get("release_id"))},
+                external_ids={"discogs": str(metadata.get("id"))},
             )
         except (KeyError, ValueError) as e:
             logger.error("Erreur lors de la conversion des métadonnées Discogs", error=str(e))
@@ -142,14 +144,14 @@ class SpotifyAlbumAdapter(AlbumAdapter):
                 external_urls["spotify"] = spotify_url
 
             release_id = metadata.get("id", "")
-
+            artists = metadata.get("artists", [])
             return Album(
                 album_id=f"spotify_{release_id}",
-                title=metadata.get("album", "Unknown"),
-                artist=metadata.get("artist", ""),
+                title=metadata.get("name", "Unknown"),
+                artist=artists[0].get("name", "Unknown") if artists else "Unknown",
                 year=self._parse_year(metadata.get("release_date", "0")),
-                genres=metadata.get("genres", []),
-                labels=[metadata.get("label")] if metadata.get("label") else [],
+                genres=metadata.get("genres", set()),
+                labels=[metadata.get("label")] if metadata.get("label") else set(),
                 tracklist=self._create_tracks(metadata.get("tracks", [])),
                 popularity=metadata.get("popularity"),
                 external_urls=external_urls,

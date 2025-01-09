@@ -1,16 +1,9 @@
-import asyncio
-
-from localllm.application.application import Application
-
-
-async def application_main() -> None:
-    app = Application()
-    await app.index_albums()
+from localllm.infra.api.cli import app
 
 
 def main() -> None:
-    asyncio.run(application_main())
+    app()
 
 
 if __name__ == "__main__":
-    asyncio.run(application_main())
+    app()

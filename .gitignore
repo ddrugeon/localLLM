@@ -123,3 +123,4 @@ dev.env
 
 data/*.db
 data/qdrant
+data/enriched_albums.json

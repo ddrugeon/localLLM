@@ -61,7 +61,7 @@ def test_create_album_with_album_domain_model_should_save_it_in_database(reposit
     # Given an album to save
 
     # When saving the album
-    album_id, _ = repository.create_album(enriched_album)
+    album_id, _ = repository.add_album(enriched_album)
 
     # Then the album should be saved in the database
     Session = sessionmaker(bind=repository._engine)
@@ -88,7 +88,7 @@ def test_create_album_with_already_exist_album_should_raise_error(repository, pr
     # Given an album to save
     # When saving the album
     with pytest.raises(AlbumSaveError):
-        repository.create_album(album)
+        repository.add_album(album)
 
 
 def test_get_number_albums_should_return_0_when_database_is_empty(repository):

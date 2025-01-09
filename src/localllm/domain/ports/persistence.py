@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Protocol
 
 from localllm.domain.multimedia import Album
@@ -12,9 +13,9 @@ class AlbumRepository(Protocol):
         """
         pass
 
-    def create_album(self, album: Album) -> (str, Album):
+    def add_album(self, album: Album) -> (str, Album):
         """
-        Saves an album to the storage.
+        Add an album to the storage.
 
         :param album: Album, the album to be saved
         :return: Album, the saved document with any additional metadata
@@ -111,6 +112,17 @@ class AlbumVectorRepository(Protocol):
         """
         Closes the vector storage system.
 
+        :return: None
+        """
+        pass
+
+class AlbumFileStorage(Protocol):
+    def save(self, path: Path, albums: list[Album]) -> None:
+        """
+        Saves albums to a file.
+
+        :param path: Path, the path to the file
+        :param albums: list[Album], the albums to be saved
         :return: None
         """
         pass

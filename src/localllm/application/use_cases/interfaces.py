@@ -25,6 +25,16 @@ class StoreAlbumUseCase(Protocol):
         """
         raise NotImplementedError
 
+class FileStorageAlbumUseCase(Protocol):
+    def persist(self, albums: list[Album], path: Path) -> None:
+        """
+        Store albums to a file.
+
+        :param albums: list of Album to save.
+        :param path: the path to the file to save.
+        :return: None.
+        """
+        raise NotImplementedError
 
 class EnrichAlbumUseCase(Protocol):
     async def enrich_albums(self, albums: list[Album]):
