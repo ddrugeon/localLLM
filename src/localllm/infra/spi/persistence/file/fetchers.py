@@ -18,11 +18,28 @@ def json_to_album(json_album: dict) -> Album:
     """
     logger.debug(f"Converting JSON album {json_album}")
 
+    if "id" in json_album:
+        album_id = str(json_album["id"])
+    elif "album_id" in json_album:
+        album_id = json_album["album_id"]
+    else:
+        album_id = ""
+
+    if "album" in json_album:
+        title = json_album["album"]
+    elif "title" in json_album:
+        title = json_album["title"]
+    else:
+        title = ""
     return Album(
-        album_id=str(json_album["id"]),
-        title=json_album["album"],
+        album_id=album_id,
+        title=title ,
         artist=json_album["artist"],
         year=json_album["year"],
+        genres=json_album["genres"] if "genres" in json_album else [],
+        styles=json_album["styles"] if "styles" in json_album else [],
+        labels=json_album["labels"] if "labels" in json_album else [],
+        country=json_album["country"] if "country" in json_album else "",
     )
 
 
@@ -41,7 +58,11 @@ class LocalFileJSONReader(AlbumFileReader):
             with open(path) as json_document:
                 data = json.load(json_document)
 
-                json_albums = data["result"]["albums_loop"]
+                if "result" not in data:
+                    if isinstance(data, list):
+                        json_albums = data
+                else:
+                    json_albums = data["result"]["albums_loop"]
 
                 return [json_to_album(json_album) for json_album in json_albums]
         except FileNotFoundError as e:

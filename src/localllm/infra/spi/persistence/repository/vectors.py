@@ -5,7 +5,7 @@ from langchain.text_splitter import CharacterTextSplitter
 from langchain_community.embeddings.fastembed import FastEmbedEmbeddings
 from langchain_core.documents import Document
 from langchain_core.embeddings import Embeddings
-from langchain_qdrant import Qdrant as QdrantLangChain
+from langchain_qdrant import QdrantVectorStore as QdrantLangChain
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, VectorParams
 
@@ -16,7 +16,15 @@ logger = structlog.getLogger()
 
 
 def _album_to_text(album: Album) -> str:
-    return f"{album.album_id} {album.title} {album.artist} {album.year} {' '.join(album.genres)}"
+    return (f"{album.album_id} "
+            f"{album.title} "
+            f"{album.artist} "
+            f"{album.year} "
+            f"{' '.join(album.genres)} "
+            f"{' '.join(album.styles)} "
+            f"{' '.join(album.labels)} "
+            f"{album.country} "
+            )
 
 
 def _album_to_document(album: Album) -> Document:
@@ -86,7 +94,7 @@ class QdrantAlbumRepository(AlbumVectorRepository):
             logger.info(f"Collection {self.collection_name} created")
 
         self.langchain_qdrant = QdrantLangChain(
-            client=self.qdrant_client, collection_name=self.collection_name, embeddings=self.embeddings
+            client=self.qdrant_client, collection_name=self.collection_name, embedding=self.embeddings
         )
 
     def index_album(self, album: Album) -> (str, Album):
@@ -97,7 +105,7 @@ class QdrantAlbumRepository(AlbumVectorRepository):
         return current_id, album
 
     def search_albums(self, query: str, top_k: int = 3) -> list[Album]:
-        documents = self.langchain_qdrant.search(query=query, k=top_k, search_type="similarity", score_threshold=0.7)
+        documents = self.langchain_qdrant.search(query=query, k=top_k, search_type="similarity", score_threshold=0.65)
         return [_document_to_album(document) for document in documents]
 
     def close(self) -> None:

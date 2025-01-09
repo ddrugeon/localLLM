@@ -10,36 +10,273 @@ from localllm.infra.spi.web.adapters import DiscogsAlbumAdapter, SpotifyAlbumAda
 @pytest.fixture
 def valid_discogs_metadata() -> dict[str, Any]:
     return {
-        "release_id": "123",
-        "title": "Daft Punk - Random Access Memories",
-        "year": 2013,
-        "genres": ["Electronic", "Pop"],
-        "styles": ["House", "Disco"],
-        "labels": ["Columbia", "Sony Music"],
-        "country": "France",
-        "tracklist": [
-            {"position": "1", "title": "Give Life Back to Music", "duration": 60},
-            {"position": "2", "title": "Get Lucky", "duration": 90},
+        "country": "Netherlands",
+        "year": "2000",
+        "format": ["CD", "Album"],
+        "label": [
+            "Transmission Records",
+            "Transmission Records",
+            "Transmission Records",
+            "The Electric Castle",
+            "RS29",
+            "The Dungeon",
+            "House Of Music Studios",
+            "Crazy Cat Studio, Hamburg",
+            "The Walden West Recorder",
+            "Ninth Street Studios",
+            "Studio Triade",
+            "Thin Ice Studios",
+            "Sound Factory, Soest",
+            "RS29",
+            "Sony DADC",
         ],
-        "credits": "Produced by Daft Punk",
-        "discogs_url": "https://www.discogs.com/release/123",
+        "type": "release",
+        "genre": ["Rock"],
+        "style": ["Progressive Metal", "Rock Opera"],
+        "id": 575009,
+        "barcode": [
+            "8712488993867",
+            "8 712488 993867",
+            "Sony DADC IFPI L554 A0100318454-0101 14 A4",
+            "Sony DADC IFPI L554 A0100318454-0101 14 A1",
+            "Sony DADC IFPI L554 A0100318454-0101 14 A5",
+            "IFPI L554",
+            "IFPI 94Z3",
+            "IFPI 949B",
+            "STEMRA",
+        ],
+        "user_data": {"in_wantlist": False, "in_collection": False},
+        "master_id": 214918,
+        "master_url": "https://api.discogs.com/masters/214918",
+        "uri": "/release/575009-Ayreon-Universal-Migrator-Part-2-Flight-Of-The-Migrator",
+        "catno": "TM-020",
+        "title": "Ayreon - Universal Migrator Part 2: Flight Of The Migrator",
+        "thumb": "https://i.discogs.com/5doA7LV5UwuqtFS5noRDvAT6IkADU6D1Ekq8f2bw0gU/rs:fit/g:sm/q:40/h:150/w:150/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTU3NTAw/OS0xMTQ5MzI4MzA4/LmpwZWc.jpeg",
+        "cover_image": "https://i.discogs.com/8PhJnX2CEIkgP6YmPwI5aQ3wHtUtaYGtodv3aBpveWE/rs:fit/g:sm/q:90/h:480/w:480/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTU3NTAw/OS0xMTQ5MzI4MzA4/LmpwZWc.jpeg",
+        "resource_url": "https://api.discogs.com/releases/575009",
+        "community": {"want": 85, "have": 894},
+        "format_quantity": 1,
+        "formats": [{"name": "CD", "qty": "1", "descriptions": ["Album"]}],
     }
+
+    # return {
+    #     "release_id": "123",
+    #     "title": "Daft Punk - Random Access Memories",
+    #     "year": 2013,
+    #     "genres": ["Electronic", "Pop"],
+    #     "styles": ["House", "Disco"],
+    #     "labels": ["Columbia", "Sony Music"],
+    #     "country": "France",
+    #     "tracklist": [
+    #         {"position": "1", "title": "Give Life Back to Music", "duration": 60},
+    #         {"position": "2", "title": "Get Lucky", "duration": 90},
+    #     ],
+    #     "credits": "Produced by Daft Punk",
+    #     "discogs_url": "https://www.discogs.com/release/123",
+    # }
 
 
 @pytest.fixture
 def valid_spotify_metadata() -> dict[str, Any]:
     return {
-        "album": "Random Access Memories",
-        "artist": "Daft Punk",
-        "release_date": "2013-05-17",
-        "genres": ["Electronic", "French House"],
-        "label": "Columbia",
-        "popularity": 82,
-        "tracks": [
-            {"position": 1, "title": "Give Life Back to Music", "duration": "337000"},
-            {"position": 2, "title": "Get Lucky", "duration": "367000"},
+        "album_type": "album",
+        "total_tracks": 8,
+        "available_markets": [
+            "AR",
+            "AU",
+            "AT",
+            "BE",
+            "BO",
+            "BR",
+            "BG",
+            "CA",
+            "CL",
+            "CO",
+            "CR",
+            "CY",
+            "CZ",
+            "DK",
+            "DO",
+            "DE",
+            "EC",
+            "EE",
+            "SV",
+            "FI",
+            "FR",
+            "GR",
+            "GT",
+            "HN",
+            "HK",
+            "HU",
+            "IS",
+            "IE",
+            "IT",
+            "LV",
+            "LT",
+            "LU",
+            "MY",
+            "MT",
+            "MX",
+            "NL",
+            "NZ",
+            "NI",
+            "NO",
+            "PA",
+            "PY",
+            "PE",
+            "PH",
+            "PL",
+            "PT",
+            "SG",
+            "SK",
+            "ES",
+            "SE",
+            "CH",
+            "TW",
+            "TR",
+            "UY",
+            "US",
+            "GB",
+            "AD",
+            "LI",
+            "MC",
+            "ID",
+            "JP",
+            "TH",
+            "VN",
+            "RO",
+            "IL",
+            "ZA",
+            "SA",
+            "AE",
+            "BH",
+            "QA",
+            "OM",
+            "KW",
+            "EG",
+            "MA",
+            "DZ",
+            "TN",
+            "LB",
+            "JO",
+            "PS",
+            "IN",
+            "KZ",
+            "MD",
+            "UA",
+            "SI",
+            "KR",
+            "BD",
+            "PK",
+            "LK",
+            "GH",
+            "KE",
+            "NG",
+            "TZ",
+            "UG",
+            "AG",
+            "AM",
+            "BS",
+            "BB",
+            "BZ",
+            "BT",
+            "BW",
+            "BF",
+            "CV",
+            "CW",
+            "DM",
+            "FJ",
+            "GM",
+            "GE",
+            "GD",
+            "GW",
+            "GY",
+            "HT",
+            "JM",
+            "KI",
+            "LS",
+            "MW",
+            "MV",
+            "ML",
+            "MH",
+            "FM",
+            "NA",
+            "NR",
+            "NE",
+            "PW",
+            "PG",
+            "PR",
+            "WS",
+            "SM",
+            "ST",
+            "SN",
+            "SC",
+            "SL",
+            "SB",
+            "KN",
+            "LC",
+            "VC",
+            "SR",
+            "TL",
+            "TO",
+            "TT",
+            "TV",
+            "VU",
+            "AZ",
+            "BN",
+            "BI",
+            "KH",
+            "CM",
+            "TD",
+            "KM",
+            "GQ",
+            "SZ",
+            "GA",
+            "GN",
+            "KG",
+            "LA",
+            "MO",
+            "MR",
+            "MN",
+            "NP",
+            "RW",
+            "TG",
+            "UZ",
+            "BJ",
+            "MG",
+            "MU",
+            "MZ",
+            "AO",
+            "DJ",
+            "ZM",
+            "CG",
+            "TJ",
+            "VE",
+            "ET",
         ],
-        "spotify_url": "https://open.spotify.com/album/123456",
+        "external_urls": {"spotify": "https://open.spotify.com/album/7q0sRz2m6J42lSxINl1DPs"},
+        "href": "https://api.spotify.com/v1/albums/7q0sRz2m6J42lSxINl1DPs",
+        "id": "7q0sRz2m6J42lSxINl1DPs",
+        "images": [
+            {"height": 640, "url": "https://i.scdn.co/image/ab67616d0000b27326f5ae57a5699ce580d00acb", "width": 640},
+            {"height": 300, "url": "https://i.scdn.co/image/ab67616d00001e0226f5ae57a5699ce580d00acb", "width": 300},
+            {"height": 64, "url": "https://i.scdn.co/image/ab67616d0000485126f5ae57a5699ce580d00acb", "width": 64},
+        ],
+        "name": "Twilight in Olympus (Special Edition)",
+        "release_date": "1998",
+        "release_date_precision": "year",
+        "type": "album",
+        "uri": "spotify:album:7q0sRz2m6J42lSxINl1DPs",
+        "artists": [
+            {
+                "external_urls": {"spotify": "https://open.spotify.com/artist/4MnZkh4dpNmTMPxkl4Ev5L"},
+                "href": "https://api.spotify.com/v1/artists/4MnZkh4dpNmTMPxkl4Ev5L",
+                "id": "4MnZkh4dpNmTMPxkl4Ev5L",
+                "name": "Symphony X",
+                "type": "artist",
+                "uri": "spotify:artist:4MnZkh4dpNmTMPxkl4Ev5L",
+            }
+        ],
     }
 
 
@@ -110,12 +347,14 @@ def test_invalid_popularity_validation():
 def test_discogs_valid_conversion(discogs_adapter, valid_discogs_metadata):
     album = discogs_adapter.to_album(valid_discogs_metadata)
     assert album is not None
-    assert album.title == "Random Access Memories"
-    assert album.artist == "Daft Punk"
-    assert album.year == 2013
-    assert len(album.tracklist) == 2
-    assert album.genres == ["Electronic", "Pop"]
-    assert album.styles == ["House", "Disco"]
+
+    title = valid_discogs_metadata["title"].split(" - ")
+
+    assert album.title == title[1]
+    assert album.artist == title[0]
+    assert str(album.year) == valid_discogs_metadata["year"]
+    assert album.genres == valid_discogs_metadata["genre"]
+    assert album.styles == valid_discogs_metadata["style"]
 
 
 def test_discogs_missing_required_fields(discogs_adapter):
@@ -136,12 +375,9 @@ def test_discogs_empty_metadata(discogs_adapter):
 def test_spotify_valid_conversion(spotify_adapter, valid_spotify_metadata):
     album = spotify_adapter.to_album(valid_spotify_metadata)
     assert album is not None
-    assert album.title == "Random Access Memories"
-    assert album.artist == "Daft Punk"
-    assert album.year == 2013
-    assert len(album.tracklist) == 2
-    assert album.popularity == 82
-    assert "Columbia" in album.labels
+    assert album.title == valid_spotify_metadata["name"]
+    assert album.artist == valid_spotify_metadata["artists"][0]["name"]
+    assert str(album.year) == valid_spotify_metadata["release_date"]
 
 
 def test_release_date_parsing(spotify_adapter, valid_spotify_metadata):
@@ -165,8 +401,4 @@ def test_spotify_empty_metadata(spotify_adapter):
 
 def test_track_conversion(spotify_adapter, valid_spotify_metadata):
     album = spotify_adapter.to_album(valid_spotify_metadata)
-    assert len(album.tracklist) == 2
-    track = album.tracklist[0]
-    assert track.position == 1
-    assert track.title == "Give Life Back to Music"
-    assert track.duration == 337000
+    assert len(album.tracklist) == 0

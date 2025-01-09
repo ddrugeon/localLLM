@@ -2,6 +2,7 @@ from uuid import uuid4
 
 import pytest
 from langchain_community.embeddings.fastembed import FastEmbedEmbeddings
+from qdrant_client.models import Distance
 
 from localllm.infra.spi.persistence.repository.vectors import QdrantAlbumRepository, _album_to_document
 
@@ -23,6 +24,7 @@ def qdrant_repository(database_url, embeddings):
         collection_name="test_collection",
         embeddings=embeddings,
         vector_size=384,
+        distance=Distance.COSINE
     )
     repository.initialize()
     yield repository

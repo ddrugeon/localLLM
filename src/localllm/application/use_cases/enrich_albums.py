@@ -29,7 +29,14 @@ class EnrichAlbums(EnrichAlbumUseCase):
             combined_metadata = album.model_dump()
             for metadata in results:
                 if metadata:
-                    combined_metadata.update({k: v for k, v in metadata.dict().items() if v is not None})
+                    for key, value in metadata.dict().items():
+                        if value is not None and key != "album_id":
+                            if isinstance(value, list):
+                                combined_metadata[key] = list(set(combined_metadata.get(key, [])) | set(value))
+                            elif isinstance(value, dict):
+                                combined_metadata[key] = {**combined_metadata.get(key, {}), **value}
+                            else:
+                                combined_metadata[key] = value
 
             return Album(**combined_metadata)
 

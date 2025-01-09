@@ -108,7 +108,7 @@ class DatabaseAlbumPersistence(AlbumRepository):
         SQLModel.metadata.drop_all(self._engine, checkfirst=True)
         SQLModel.metadata.create_all(self._engine, checkfirst=True)
 
-    def create_album(self, album: Album) -> (str, Album):
+    def add_album(self, album: Album) -> (str, Album):
         """
         Saves an album to the database.
 
