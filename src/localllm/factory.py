@@ -1,5 +1,5 @@
 import structlog
-from langchain_community.embeddings.fastembed import FastEmbedEmbeddings
+from langchain_ollama import OllamaEmbeddings
 from qdrant_client.models import Distance
 
 from localllm.application import (
@@ -36,7 +36,7 @@ def create_multimedia_service() -> MultimediaIngesterService:
     db_repository = DatabaseAlbumPersistence(db_url=settings.database_model_url)
     json_repository = JSONAlbumFileStorage()
 
-    embeddings = FastEmbedEmbeddings()
+    embeddings = OllamaEmbeddings(model="nomic-embed-text")
 
     return MultimediaIngesterService(
         load_albums_use_case=LoadAlbums(fetcher),
