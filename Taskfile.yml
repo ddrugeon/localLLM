@@ -19,6 +19,9 @@ tasks:
   stop-qdrant:
     desc: Stop qdrant
     cmd: docker compose down qdrant
+  start-ollama:
+    desc: Start ollama
+    cmd: ollama serve --host 0.0.0.0
   default:
     desc: List all tasks and their descriptions
     cmd: task --list-all
