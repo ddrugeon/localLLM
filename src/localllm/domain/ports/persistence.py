@@ -98,7 +98,7 @@ class AlbumVectorRepository(Protocol):
         """
         pass
 
-    def search_albums(self, query: str, top_k: int = 3) -> list[Album]:
+    def search_albums(self, query: str, top_k: int = 3) -> list[tuple[Album, float]]:
         """
         Searches for albums based on a query.
 

@@ -35,6 +35,10 @@ Build and run the Docker container using the `docker` task: `task docker`
 - `data/inputs/`: Input data for the project
 - `Taskfile.yml`: Task definitions for the project
 
+## Creating the model
+
+To create the model dedicated to intent detection, run the `create_model` task: `task create_model`
+
 ## Running the project
 
 Run the project using the `run` task: `task run`

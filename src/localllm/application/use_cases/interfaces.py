@@ -55,7 +55,7 @@ class IndexAlbumUseCase(Protocol):
         """
         raise NotImplementedError
 
-    def search_albums(self, query: str, top_k: int = 5) -> list[Album]:
+    def search_albums(self, query: str, top_k: int = 5) -> list[tuple[Album, float]]:
         """
         Search for albums in a vector database.
 

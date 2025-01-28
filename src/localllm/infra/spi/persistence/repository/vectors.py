@@ -16,15 +16,15 @@ logger = structlog.getLogger()
 
 
 def _album_to_text(album: Album) -> str:
-    return (f"{album.album_id} "
-            f"{album.title} "
-            f"{album.artist} "
-            f"{album.year} "
-            f"{' '.join(album.genres)} "
-            f"{' '.join(album.styles)} "
-            f"{' '.join(album.labels)} "
-            f"{album.country} "
-            )
+    return (
+        f'"{album.title}" is the title of an album by the artist "{album.artist}".'
+        f"It was released in {album.year}."
+        f"This album has the following genres:{' '.join(album.genres)} and "
+        f"the following styles: {' '.join(album.styles)}."
+        f"This album was also released by the following labels: {' '.join(album.labels)}."
+        f"This album was initialy released in {album.country}."
+        f"In my database, this album has the following ID : {album.album_id}."
+    )
 
 
 def _album_to_document(album: Album) -> Document:
@@ -104,9 +104,9 @@ class QdrantAlbumRepository(AlbumVectorRepository):
         self.langchain_qdrant.add_documents(documents=[document], ids=[str(current_id)])
         return current_id, album
 
-    def search_albums(self, query: str, top_k: int = 3) -> list[Album]:
-        documents = self.langchain_qdrant.search(query=query, k=top_k, search_type="similarity", score_threshold=0.65)
-        return [_document_to_album(document) for document in documents]
+    def search_albums(self, query: str, top_k: int = 3) -> list[tuple[Album, float]]:
+        documents = self.langchain_qdrant.similarity_search_with_score(query=query, k=top_k)
+        return [(_document_to_album(doc[0]), doc[1]) for doc in documents]
 
     def close(self) -> None:
         self.qdrant_client.close()

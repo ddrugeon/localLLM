@@ -81,6 +81,6 @@ class MultimediaIngesterService:
         logger.info("Indexing albums")
         return self._index_albums_use_case.index_albums(albums)
 
-    def search_albums(self, query: str, top_k: int = 5) -> list[Album]:
+    def search_albums(self, query: str, top_k: int = 5) -> list[tuple[Album, float]]:
         logger.info(f"Search album from query: {query}")
         return self._index_albums_use_case.search_albums(query, top_k=top_k)

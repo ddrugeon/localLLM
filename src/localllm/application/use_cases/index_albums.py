@@ -37,6 +37,6 @@ class QdrantIndexAlbums(IndexAlbumUseCase):
         logger.info("All albums indexed in repository")
         return albums
 
-    def search_albums(self, query: str, top_k: int = 5) -> list[Album]:
+    def search_albums(self, query: str, top_k: int = 5) -> list[tuple[Album, float]]:
         logger.info(f"Searching for albums with query {query}")
         return self.repository.search_albums(query, top_k)
