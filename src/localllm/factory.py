@@ -36,7 +36,7 @@ def create_multimedia_service() -> MultimediaIngesterService:
     db_repository = DatabaseAlbumPersistence(db_url=settings.database_model_url)
     json_repository = JSONAlbumFileStorage()
 
-    embeddings = OllamaEmbeddings(model="nomic-embed-text")
+    embeddings = OllamaEmbeddings(model="snowflake-arctic-embed2")
 
     return MultimediaIngesterService(
         load_albums_use_case=LoadAlbums(fetcher),

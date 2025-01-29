@@ -80,9 +80,7 @@ def serve(query: str, top_k: int = 5):
     prompt_formatted_str: str = prompt.format(question=query, context=context)
 
     llm = OllamaLLM(
-    model="intent",
-    temperature=0,
-    # other params...
+        model="intent",
     )
 
     logger.info("Invoking LLM...")
