@@ -116,6 +116,7 @@ class AlbumVectorRepository(Protocol):
         """
         pass
 
+
 class AlbumFileStorage(Protocol):
     def save(self, path: Path, albums: list[Album]) -> None:
         """

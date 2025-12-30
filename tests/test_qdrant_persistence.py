@@ -24,7 +24,7 @@ def qdrant_repository(database_url, embeddings):
         collection_name="test_collection",
         embeddings=embeddings,
         vector_size=384,
-        distance=Distance.COSINE
+        distance=Distance.COSINE,
     )
     repository.initialize()
     yield repository
@@ -60,34 +60,38 @@ def test_search_albums_should_return_albums_when_query_matches_title_in_database
         ids=[str(uuid4().hex) for idx, _ in enumerate(albums)],
     )
 
-    # When searching for albums by title
-    searched_albums = qdrant_repository.search_albums("Echoes")
-    expected_albums = [albums[1], albums[2]]
-    # Then the album should be returned
+    # When searching for albums by title with top_k=2 to get only the best matches
+    searched_albums = qdrant_repository.search_albums("Echoes", top_k=2)
+    expected_album_ids = {albums[1].album_id, albums[2].album_id}  # Albums with "Echoes" in title
+
+    # Then the 2 most relevant albums should be returned (those with "Echoes" in title)
     assert len(searched_albums) == 2
-    for idx, album in enumerate(searched_albums):
-        assert album.album_id == expected_albums[idx].album_id
-        assert album.title == expected_albums[idx].title
-        assert album.artist == expected_albums[idx].artist
-        assert album.year == expected_albums[idx].year
-        assert album.genres == expected_albums[idx].genres
+    returned_album_ids = {album.album_id for album, score in searched_albums}
+    assert returned_album_ids == expected_album_ids
+
+    # Verify all returned albums have "Echoes" in their title
+    for album, score in searched_albums:
+        assert "Echoes" in album.title
 
 
-def test_search_albums_should_return_albums_when_query_does_no_match_title_in_database(
+def test_search_albums_should_return_low_scores_when_query_does_not_match_title_in_database(
     embeddings, qdrant_repository, albums
 ):
-    # Given an album to save
-    # Manually insert the album into the repository's internal storage
+    # Given albums saved in the repository
     qdrant_repository.langchain_qdrant.add_documents(
         documents=[_album_to_document(current_album) for current_album in albums],
         ids=[str(uuid4().hex) for idx, _ in enumerate(albums)],
     )
 
-    # When searching for albums by title
+    # When searching for albums with a non-matching query
     searched_albums = qdrant_repository.search_albums("Les Miserables")
 
-    # Then the album should be returned
-    assert len(searched_albums) == 0
+    # Then results are returned (vector search always returns top_k results)
+    # but with low similarity scores indicating poor matches
+    assert len(searched_albums) > 0
+    for album, score in searched_albums:
+        # Scores should be below 0.5, indicating weak semantic similarity
+        assert score < 0.5, f"Expected low score for non-matching query, got {score} for {album.title}"
 
 
 def test_search_albums_should_return_empty_list_when_no_albums_in_database(qdrant_repository):

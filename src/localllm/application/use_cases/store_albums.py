@@ -38,6 +38,7 @@ class DatabaseStoreAlbums(StoreAlbumUseCase):
         logger.info("All albums stored in repository")
         return albums
 
+
 class JSONFileStorageAlbums(FileStorageAlbumUseCase):
     """
     Use case to store albums in a JSON file.
