@@ -25,6 +25,7 @@ class StoreAlbumUseCase(Protocol):
         """
         raise NotImplementedError
 
+
 class FileStorageAlbumUseCase(Protocol):
     def persist(self, albums: list[Album], path: Path) -> None:
         """
@@ -35,6 +36,7 @@ class FileStorageAlbumUseCase(Protocol):
         :return: None.
         """
         raise NotImplementedError
+
 
 class EnrichAlbumUseCase(Protocol):
     async def enrich_albums(self, albums: list[Album]):

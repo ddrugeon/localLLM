@@ -24,7 +24,6 @@ class AlbumAdapter(ABC):
         ]
 
 
-
 class DiscogsAlbumAdapter(AlbumAdapter):
     def _parse_title(self, title: str) -> tuple[str | None, str]:
         if " - " in title:

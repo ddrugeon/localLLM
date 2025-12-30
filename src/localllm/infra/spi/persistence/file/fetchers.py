@@ -33,7 +33,7 @@ def json_to_album(json_album: dict) -> Album:
         title = ""
     return Album(
         album_id=album_id,
-        title=title ,
+        title=title,
         artist=json_album["artist"],
         year=json_album["year"],
         genres=json_album["genres"] if "genres" in json_album else [],

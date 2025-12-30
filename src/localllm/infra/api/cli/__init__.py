@@ -42,12 +42,14 @@ def ingest(enrich: bool = False, file: Path = Path("data/inputs/albums.json"), s
     if store:
         asyncio.run(application.store_albums(albums=albums))
 
+
 @app.command()
 def index(file: Path = Path("data/inputs/albums.json")):
     """Index albums into vector store."""
     application = create_multimedia_service()
     albums = application.load_albums(album_file_path=file)
     application.index_albums(albums=albums)
+
 
 @app.command()
 def search(query: str, top_k: int = 5):
@@ -61,6 +63,7 @@ def search(query: str, top_k: int = 5):
 
     console.print(table)
 
+
 @app.command()
 def serve(query: str, top_k: int = 5):
     application = create_multimedia_service()
@@ -72,10 +75,12 @@ def serve(query: str, top_k: int = 5):
 
     console.print(table)
 
-    context = "\n\n---\n\n".join([
-        f"{score} - {album.album_id} - {album.title} by {album.artist} "
-        f"- {album.year} - {album.genres}" for album, score in results
-    ])
+    context = "\n\n---\n\n".join(
+        [
+            f"{score} - {album.album_id} - {album.title} by {album.artist} " f"- {album.year} - {album.genres}"
+            for album, score in results
+        ]
+    )
     prompt = ChatPromptTemplate.from_template(PROMPT_TEMPLATE)
     prompt_formatted_str: str = prompt.format(question=query, context=context)
 
