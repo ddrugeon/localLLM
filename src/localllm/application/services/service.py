@@ -64,7 +64,7 @@ class MultimediaIngesterService:
         :return: Albums saved.
         """
         logger.info("Storing albums to repository")
-        return self._store_albums_use_case.store_albums(albums)
+        return await self._store_albums_use_case.store_albums(albums)
 
     def save_albums(self, albums: list[Album], path: Path) -> None:
         """

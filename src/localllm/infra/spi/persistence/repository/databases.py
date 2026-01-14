@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import UTC, datetime
 
 import structlog
 from sqlalchemy.exc import SQLAlchemyError
@@ -217,7 +217,7 @@ class DatabaseAlbumPersistence(AlbumRepository):
                     album.credits = updated_album.credits
                     album.external_urls = updated_album.external_urls
                     album.external_ids = updated_album.external_ids
-                    album.updated_at = datetime.now(datetime.UTC)
+                    album.updated_at = datetime.now(UTC)
                     session.add(album)
                     session.commit()
                     session.refresh(album)

@@ -1,5 +1,6 @@
 import json
-from datetime import datetime
+from datetime import UTC, datetime
+from functools import partial
 from typing import Optional
 
 from sqlmodel import Field, Relationship, SQLModel
@@ -14,8 +15,8 @@ class TrackEntity(SQLModel, table=True):
     duration: str
     album_id: int | None = Field(default=None, foreign_key="album.id")
     album: Optional["AlbumEntity"] = Relationship(back_populates="tracklist")
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=partial(datetime.now, UTC))
+    updated_at: datetime = Field(default_factory=partial(datetime.now, UTC))
 
 
 class AlbumEntity(SQLModel, table=True):
@@ -37,8 +38,8 @@ class AlbumEntity(SQLModel, table=True):
     external_urls: str = Field(default="{}")
     external_ids: str = Field(default="{}")
 
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=partial(datetime.now, UTC))
+    updated_at: datetime = Field(default_factory=partial(datetime.now, UTC))
 
     def __init__(self, **data):
         if "genres" in data and isinstance(data["genres"], list):
