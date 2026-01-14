@@ -31,7 +31,16 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+Verify compliance with `.specify/memory/constitution.md` principles:
+
+- [ ] **Hexagonal Architecture**: Does the feature maintain separation between domain, application, and infrastructure layers? Are ports defined for external dependencies?
+- [ ] **Type Safety**: Are all new functions/classes fully type-annotated with Python 3.12+ syntax? Are domain models using Pydantic with `frozen=True`?
+- [ ] **Testing Strategy**: Is TDD approach defined (if tests requested)? Are test coverage targets clear (domain: 100%, application: >90%, infrastructure: >70%)?
+- [ ] **Code Quality**: Are linting, formatting, and pre-commit hooks configured? Does implementation follow conventional commit messages?
+- [ ] **Async-First**: Are I/O-bound operations (API calls, DB, vector store) using async/await? Is `asyncio.gather()` used for concurrent operations?
+- [ ] **Technology Constraints**: Does the feature use only approved technologies from the constitution? Any new dependencies require justification.
+
+If ANY principle is violated, document justification in "Complexity Tracking" section below.
 
 ## Project Structure
 
